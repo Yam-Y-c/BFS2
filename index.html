@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Parallel World: The Final Profile</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Noto+Serif+KR:wght@300;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Noto+Serif+KR:wght@300;700&display=swap');
 
         /* 1. 기본 설정 */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow-x: hidden; background: #000; font-family: 'Noto Serif KR', serif; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow-x: hidden; background: #000; font-family: 'Noto Serif KR', serif; color: #fff; }
 
         /* 2. 인트로 (유지) */
         #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: flex; justify-content: center; align-items: center; pointer-events: none; }
@@ -18,8 +18,8 @@
         @keyframes drawCrack { to { stroke-dashoffset: 0; } }
         .shard { position: absolute; background: #f0f0f0; box-shadow: 0 0 30px rgba(0,0,0,0.9); clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%); pointer-events: none; z-index: 5005; }
 
-        /* 3. 메인 선택 화면 (유지) */
-        #selection-screen { display: flex; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s; }
+        /* 3. 메인 선택 화면 */
+        #selection-screen { display: flex; width: 100%; height: 100vh; opacity: 0; transition: opacity 0.8s; }
         .choice { flex: 1; position: relative; cursor: pointer; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; transition: 0.7s cubic-bezier(0.165, 0.84, 0.44, 1); filter: grayscale(90%); }
         .choice img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 0.5; transition: 0.5s; }
         .char-name { position: relative; z-index: 10; margin-bottom: 50px; font-family: 'Noto Sans KR', sans-serif; font-size: 3rem; font-weight: 700; letter-spacing: 12px; opacity: 0; transform: translateY(30px); transition: 0.5s; text-shadow: 0 5px 20px rgba(0,0,0,1); }
@@ -28,28 +28,47 @@
         .ajun-select { background: #0a0a0a; color: #f1c40f; }
         .ian-select { background: #080000; color: #e74c3c; }
 
-        /* 4. 프로필 상세 페이지 (모든 데이터 복구) */
+        /* 4. 프로필 상세 페이지 (모바일 최적화) */
         .profile-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; box-sizing: border-box; z-index: 3000; animation: fadeIn 0.8s forwards; overflow-y: auto; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(1.02); } to { opacity: 1; transform: scale(1); } }
-        .profile-content { display: flex; flex-direction: column; align-items: center; max-width: 1200px; margin: 0 auto; min-height: 100vh; padding: 60px 20px; }
-        .profile-main-card { display: flex; align-items: center; width: 100%; margin-bottom: 60px; }
-        .profile-img { width: 420px; height: 600px; object-fit: cover; box-shadow: 0 25px 50px rgba(0,0,0,0.6); flex-shrink: 0; }
-        .profile-info { margin-left: 70px; flex: 1; display: flex; flex-direction: column; }
-        .quote { font-size: 1.6rem; line-height: 1.8; margin-bottom: 40px; word-break: keep-all; font-weight: 700; }
-        .details { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; font-family: 'Noto Sans KR', sans-serif; }
-        .details div { margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
-        .details span { width: 110px; display: inline-block; opacity: 0.5; font-weight: 400; }
-        .keyword-tag { padding: 8px 20px; border-radius: 50px; font-size: 0.9rem; font-weight: 700; border: 1px solid currentColor; display: inline-block; margin: 10px 10px 0 0; }
-        .theme-ajun { background: #fffef9; color: #222; }
-        .theme-ian { background: #060000; color: #f0f0f0; }
-
-        /* 5. 스마트폰 시뮬레이터 */
-        .phone-section { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 50px 0; }
-        .phone-frame { width: 360px; height: 740px; background: #000; border: 12px solid #222; border-radius: 50px; position: relative; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.8); }
-        .screen { width: 100%; height: 100%; position: relative; display: flex; flex-direction: column; background-size: cover; background-position: center; }
         
-        /* 상태바 */
-        .status-bar { height: 35px; display: flex; justify-content: space-between; align-items: center; padding: 0 35px; font-size: 0.78rem; color: #fff; z-index: 1500; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
+        .profile-content { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        
+        .profile-main-card { display: flex; align-items: flex-start; width: 100%; margin-bottom: 60px; max-width: 1000px; }
+        .profile-img { width: 420px; height: 600px; object-fit: cover; box-shadow: 0 25px 50px rgba(0,0,0,0.6); flex-shrink: 0; border-radius: 4px; }
+        .profile-info { margin-left: 60px; flex: 1; display: flex; flex-direction: column; }
+        .quote { font-size: 1.6rem; line-height: 1.8; margin-bottom: 35px; word-break: keep-all; font-weight: 700; }
+        .details { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; font-family: 'Noto Sans KR', sans-serif; }
+        .details div { margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .details span { width: 100px; display: inline-block; opacity: 0.5; font-weight: 400; }
+        .keyword-tag { padding: 8px 18px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; border: 1px solid currentColor; display: inline-block; margin: 8px 8px 0 0; }
+        
+        /* 모바일 대응: 프로필 카드 스택 */
+        @media (max-width: 900px) {
+            .profile-main-card { flex-direction: column; align-items: center; }
+            .profile-img { width: 100%; max-width: 350px; height: auto; aspect-ratio: 2/3; }
+            .profile-info { margin-left: 0; margin-top: 40px; text-align: center; }
+            .details { text-align: left; max-width: 400px; width: 100%; margin: 0 auto; }
+            .quote { font-size: 1.3rem; }
+        }
+
+        /* 5. 스마트폰 시뮬레이터 (중앙 보정) */
+        .phone-section { display: flex; flex-direction: column; align-items: center; width: 100%; margin: 30px 0 60px 0; }
+        .phone-wrapper { position: relative; width: 360px; height: 740px; }
+        
+        /* 모바일 대응: 스마트폰 크기 축소 */
+        @media (max-width: 400px) {
+            .phone-wrapper { transform: scale(0.85); transform-origin: top center; margin-bottom: -100px; }
+        }
+        @media (max-width: 350px) {
+            .phone-wrapper { transform: scale(0.75); margin-bottom: -180px; }
+        }
+
+        .phone-frame { width: 100%; height: 100%; background: #000; border: 12px solid #222; border-radius: 55px; position: relative; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.8); }
+        .screen { width: 100%; height: 100%; position: relative; display: flex; flex-direction: column; background-size: cover; background-position: center; }
+
+        /* 상태바 (고딕체 & 모서리 보정) */
+        .status-bar { height: 35px; display: flex; justify-content: space-between; align-items: center; padding: 0 35px; font-size: 0.78rem; color: #fff; z-index: 1500; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; background: rgba(0,0,0,0.05); }
 
         /* 잠금 화면 */
         .lock-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; display: flex; flex-direction: column; align-items: center; color: #fff; padding-top: 80px; background-size: cover; background-position: center; transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); cursor: pointer; }
@@ -58,30 +77,22 @@
         .lock-date { font-size: 1.1rem; font-family: 'Noto Sans KR', sans-serif; margin-top: 5px; opacity: 0.9; }
 
         /* 앱 시스템 */
-        .app-grid { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; padding: 75px 20px; z-index: 5; }
+        .app-grid { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 70px 20px; }
         .app-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .app-box { width: 72px; height: 72px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 10px; box-shadow: 0 8px 15px rgba(0,0,0,0.4); }
+        .app-box { width: 72px; height: 72px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2.1rem; margin-bottom: 10px; box-shadow: 0 8px 15px rgba(0,0,0,0.4); }
         .app-label { font-size: 0.8rem; color: #fff; text-shadow: 0 1px 3px #000; font-family: 'Noto Sans KR'; font-weight: 500; }
 
-        /* [수정] 하단 내비바 보정: 잘리지 않게 높이와 패딩 조정 */
+        /* 내비바 (실제 기기 위치 보정) */
         .nav-bar { 
-            position: absolute; 
-            bottom: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 75px; /* 높이를 조금 키우고 */
-            background: rgba(0,0,0,0.92); 
-            display: flex; 
-            justify-content: space-around; 
-            align-items: flex-start; /* 아이콘을 위로 정렬 */
-            padding-top: 3px; /* 상단 여백으로 아이콘 위치 조정 */
-            z-index: 2100; 
-            border-top: 1px solid rgba(255,255,255,0.08); 
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 65px; 
+            background: rgba(0,0,0,0.9); display: flex; justify-content: space-around; 
+            align-items: flex-start; padding-top: 3px; z-index: 2100; border-top: 1px solid rgba(255,255,255,0.08); 
         }
         .nav-btn { color: #fff; font-size: 1.1rem; cursor: pointer; opacity: 0.6; padding: 5px 25px; transition: 0.2s; }
 
-        /* 앱 실행 창 */
+        /* 앱 창 */
         .app-window { position: absolute; top: 0; left: 0; width: 100%; height: calc(100% - 65px); z-index: 400; display: none; flex-direction: column; background: #fff; animation: appFade 0.3s ease; }
+        @keyframes appFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .app-header { height: 55px; display: flex; align-items: center; padding: 0 20px; font-weight: 700; border-bottom: 1px solid #eee; color: #000; font-family: 'Noto Sans KR'; }
 
         /* 메시지 */
@@ -90,42 +101,43 @@
         .chat-sub { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 500; display: none; flex-direction: column; }
         .chat-log { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .date-tag { align-self: center; background: rgba(0,0,0,0.1); color: #fff; font-size: 0.65rem; padding: 3px 10px; border-radius: 10px; margin: 10px 0; }
-        .bubble { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 0.8rem; line-height: 1.5; font-family: 'Noto Sans KR'; position: relative; }
+        .bubble { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 0.82rem; line-height: 1.5; font-family: 'Noto Sans KR'; position: relative; }
         .b-received { background: #fff; align-self: flex-start; color: #000; border-top-left-radius: 2px; }
         .b-sent { background: #fee500; align-self: flex-end; color: #000; border-top-right-radius: 2px; }
         
         .kakao-bg { background: #bac6d3; }
         .b-kakao-sent { background: #ffeb33; align-self: flex-end; color: #000; border-top-right-radius: 2px; }
-        .unread-1 { position: absolute; left: -15px; bottom: 0; color: #ffeb33; font-size: 0.7rem; font-weight: 700; }
+        .unread-1 { position: absolute; left: -15px; bottom: 0; color: #ffeb33; font-size: 0.72rem; font-weight: 700; font-family: sans-serif; }
 
         /* 갤러리 */
         .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #000; overflow-y: auto; flex: 1; padding: 2px; }
         .g-item { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; cursor: pointer; }
         .phone-viewer { position: absolute; top: 0; left: 0; width: 100%; height: calc(100% - 65px); background: #000; z-index: 2000; display: none; align-items: center; justify-content: center; }
         .viewer-img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .v-nav { position: absolute; top: 0; width: 60px; height: 100%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2rem; cursor: pointer; opacity: 0; z-index: 2010; transition: 0.2s; }
+        .v-nav { position: absolute; top: 0; width: 60px; height: 100%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2.2rem; cursor: pointer; opacity: 0; z-index: 2010; transition: 0.2s; }
+        .v-nav.active { opacity: 0.4; }
         .v-prev { left: 0; } .v-next { right: 0; }
-        .v-nav.active { opacity: 0.4; } .v-nav.active:hover { opacity: 1; }
 
         /* 메모장 시스템 */
         .memo-lock-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 600; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
         .lock-pw-input { width: 140px; height: 45px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 1.2rem; letter-spacing: 5px; margin: 20px 0; outline: none; }
-        .memo-item { padding: 25px 20px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 1rem; font-weight: 500; font-family: 'Noto Sans KR'; }
+        .memo-item { padding: 25px 20px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 1.05rem; font-weight: 500; font-family: 'Noto Sans KR'; }
         
-        .theme-ajun .memo-item { color: #333; }
         .theme-ian .memo-item { color: #fff; border-bottom-color: #333; }
+        .theme-ajun .memo-item { color: #333; }
         .theme-ian .memo-lock-overlay { background: #111; color: #fff; }
         .theme-ian .lock-pw-input { background: #222; color: #fff; border-color: #333; }
 
-        .memo-detail { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 550; display: none; flex-direction: column; padding: 35px 25px; overflow-y: auto; font-size: 0.95rem; line-height: 1.8; white-space: pre-wrap; font-family: 'Noto Sans KR'; }
+        .memo-detail { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 550; display: none; flex-direction: column; padding: 35px 25px; overflow-y: auto; font-size: 1rem; line-height: 1.8; white-space: pre-wrap; font-family: 'Noto Sans KR'; }
         .theme-ajun .memo-detail { background: #fff; color: #333; }
-        .theme-ajun .memo-detail-title { color: #000; font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; }
         .theme-ian .memo-detail { background: #111; color: #ddd; }
-        .theme-ian .memo-detail-title { color: #fff; font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; }
-        .memo-inner-divider { height: 2px; background: currentColor; margin-bottom: 20px; width: 40px; opacity: 0.3; }
+        .memo-detail-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; }
+        .theme-ajun .memo-detail-title { color: #000; }
+        .theme-ian .memo-detail-title { color: #fff; }
+        .memo-inner-divider { height: 2px; background: currentColor; margin-bottom: 25px; width: 45px; opacity: 0.4; }
 
-        .btn-back-final { margin-top: 30px; padding: 12px 50px; background: none; border: 1px solid currentColor; color: inherit; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .btn-back-final:hover { background: currentColor; color: #000; }
+        .btn-return-main { margin-top: 30px; padding: 12px 55px; background: none; border: 1px solid currentColor; color: inherit; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-return-main:hover { background: currentColor; color: #000; }
     </style>
 </head>
 <body>
@@ -169,58 +181,57 @@
                     </div>
                 </div>
             </div>
+            
             <div class="phone-section">
-                <div class="phone-frame">
-                    <div class="status-bar">
-                        <span class="current-time-val">00:00</span>
-                        <span>🔋 100%</span>
-                    </div>
-                    <div class="lock-screen" id="lock-ajun" style="background-image: url('https://raw.githubusercontent.com/Yam-Y-c/BF/refs/heads/main/A05.png')" onclick="unlock('ajun')">
-                        <div class="lock-time current-time-val">00:00</div>
-                        <div class="lock-date">2026.01.08</div>
-                        <div style="position:absolute; bottom:80px; opacity:0.5; font-size:0.8rem; font-family: 'Noto Sans KR', sans-serif;">TAP TO UNLOCK</div>
-                    </div>
-                    <div class="screen" style="background-image: url('https://raw.githubusercontent.com/Yam-Y-c/BF/refs/heads/main/A05.png')">
-                        <div class="app-grid">
-                            <div class="app-item" onclick="openApp('ajun-chat')"><div class="app-box" style="background:#fff">💬</div><div class="app-label">메시지</div></div>
-                            <div class="app-item" onclick="openApp('ajun-gallery')"><div class="app-box" style="background:#fff">🖼️</div><div class="app-label">갤러리</div></div>
-                            <div class="app-item" onclick="openApp('ajun-memo')"><div class="app-box" style="background:#fff">📝</div><div class="app-label">메모</div></div>
+                <div class="phone-wrapper">
+                    <div class="phone-frame">
+                        <div class="status-bar">
+                            <span class="current-time-val">00:00</span>
+                            <span>🔋 100%</span>
                         </div>
-                        <div id="ajun-chat" class="app-window" style="background:#fff">
-                            <div class="app-header">메시지</div>
-                            <div class="chat-row" onclick="openSub('ajun-u-chat')">
-                                <div class="chat-pfp" style="background-image:url('https://raw.githubusercontent.com/Yam-Y-c/BF/refs/heads/main/A01.png')"></div>
-                                <div><div style="font-weight:700; color:#000">내 사랑</div><div style="font-size:0.75rem; color:#888">착하네. 내가 빨리 가서 안아줄게.</div></div>
+                        <div class="lock-screen" id="lock-ajun" style="background-image: url('https://raw.githubusercontent.com/Yam-Y-c/BF/refs/heads/main/A05.png')" onclick="unlock('ajun')">
+                            <div class="lock-time current-time-val">00:00</div>
+                            <div class="lock-date">2026.01.08</div>
+                            <div style="position:absolute; bottom:80px; opacity:0.5; font-size:0.8rem; font-family: 'Noto Sans KR';">TAP TO UNLOCK</div>
+                        </div>
+                        <div class="screen" style="background-image: url('https://raw.githubusercontent.com/Yam-Y-c/BF/refs/heads/main/A05.png')">
+                            <div class="app-grid">
+                                <div class="app-item" onclick="openApp('ajun-chat')"><div class="app-box" style="background:#fff">💬</div><div class="app-label">메시지</div></div>
+                                <div class="app-item" onclick="openApp('ajun-gallery')"><div class="app-box" style="background:#fff">🖼️</div><div class="app-label">갤러리</div></div>
+                                <div class="app-item" onclick="openApp('ajun-memo')"><div class="app-box" style="background:#fff">📝</div><div class="app-label">메모</div></div>
                             </div>
-                            <div id="ajun-u-chat" class="chat-sub" style="background:#bac6d3">
-                                <div class="app-header" style="background:#333; color:#fff">내 사랑</div>
-                                <div class="chat-log" id="ajun-chat-log"></div>
+                            <div id="ajun-chat" class="app-window" style="background:#fff">
+                                <div class="app-header">메시지</div>
+                                <div class="chat-row" onclick="openSub('ajun-chat-u')">
+                                    <div class="chat-pfp" style="background-image:url('https://raw.githubusercontent.com/Yam-Y-c/BF/refs/heads/main/A01.png')"></div>
+                                    <div><div style="font-weight:700; color:#000">내 사랑</div><div style="font-size:0.75rem; color:#888">착하네. 내가 빨리 가서 안아줄게.</div></div>
+                                </div>
+                                <div id="ajun-chat-u" class="chat-sub" style="background:#bac6d3">
+                                    <div class="app-header" style="background:#333; color:#fff">내 사랑</div>
+                                    <div class="chat-log" id="ajun-chat-log"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div id="ajun-gallery" class="app-window"><div class="app-header" style="background:#000; color:#fff; border:none">갤러리</div><div class="gallery-grid" id="ajun-gallery-grid"></div></div>
-                        <div id="ajun-memo" class="app-window" style="background:#fff; color:#000">
-                            <div class="app-header">메모</div>
-                            <div id="ajun-memo-lock-ui" class="memo-lock-overlay">
-                                <span style="color:#e74c3c; font-size:0.75rem; font-weight:700">⚠️ 스포주의: 진실에 접근합니다</span>
-                                <input type="password" id="ajun-memo-pw" class="lock-pw-input" maxlength="4" placeholder="••••">
-                                <button onclick="checkMemoPw('ajun')" style="padding:10px 25px; border:none; background:#222; color:#fff; cursor:pointer">확인</button>
+                            <div id="ajun-gallery" class="app-window"><div class="app-header" style="background:#000; color:#fff; border:none">갤러리</div><div class="gallery-grid" id="ajun-gallery-grid"></div></div>
+                            <div id="ajun-memo" class="app-window" style="background:#fff; color:#000">
+                                <div class="app-header">메모</div>
+                                <div id="ajun-memo-lock-ui" class="memo-lock-overlay">
+                                    <span style="color:#e74c3c; font-size:0.8rem; font-weight:700">⚠️ 스포주의: 진실에 접근합니다</span>
+                                    <input type="password" id="ajun-memo-pw" class="lock-pw-input" maxlength="4" placeholder="••••">
+                                    <button onclick="checkMemoPw('ajun')" style="padding:10px 25px; border:none; background:#222; color:#fff; cursor:pointer">확인</button>
+                                </div>
+                                <div id="ajun-memo-list" style="display:none; overflow-y:auto"></div>
+                                <div id="ajun-memo-view" class="memo-detail"></div>
                             </div>
-                            <div id="ajun-memo-list" style="display:none; overflow-y:auto"></div>
-                            <div id="ajun-memo-view" class="memo-detail"></div>
-                        </div>
-                        <div id="ajun-viewer" class="phone-viewer">
-                            <div id="ajun-v-prev" class="v-nav v-prev" onclick="movePhoto('ajun', -1)">‹</div>
-                            <img id="ajun-viewer-img" class="viewer-img">
-                            <div id="ajun-v-next" class="v-nav v-next" onclick="movePhoto('ajun', 1)">›</div>
-                        </div>
-                        <div class="nav-bar">
-                            <div class="nav-btn">Ⅲ</div>
-                            <div class="nav-btn" onclick="goHome('ajun')">○</div>
-                            <div class="nav-btn" onclick="back('ajun')">◁</div>
+                            <div id="ajun-viewer" class="phone-viewer">
+                                <div id="ajun-v-prev" class="v-nav v-prev" onclick="movePhoto('ajun', -1)">‹</div>
+                                <img id="ajun-viewer-img" class="viewer-img">
+                                <div id="ajun-v-next" class="v-nav v-next" onclick="movePhoto('ajun', 1)">›</div>
+                            </div>
+                            <div class="nav-bar"><div class="nav-btn">Ⅲ</div><div class="nav-btn" onclick="goHome('ajun')">○</div><div class="nav-btn" onclick="back('ajun')">◁</div></div>
                         </div>
                     </div>
                 </div>
-                <button class="btn-back-final" onclick="goBack()">RETURN</button>
+                <button class="btn-return-main" onclick="goBack()">RETURN</button>
             </div>
         </div>
     </div>
@@ -230,7 +241,7 @@
             <div class="profile-main-card">
                 <img src="https://raw.githubusercontent.com/Yam-Y-c/BF/heads/main/B0.jpg" class="profile-img">
                 <div class="profile-info">
-                    <div class="quote">"여긴 가짜야. 널 가둔 새장에 불과하다고. 운명이니 뭐니 하는 개소리는 집어치워."</div>
+                    <div class="quote">"여긴 가짜야. 널 가둔 새장에 불과하다고... 널 위해서라면 운명의 모가지라도 비틀어줄 테니까."</div>
                     <div class="details">
                         <div><span>이름</span>이안 (Ian)</div>
                         <div><span>나이</span>26세</div>
@@ -245,57 +256,55 @@
                 </div>
             </div>
             <div class="phone-section">
-                <div class="phone-frame">
-                    <div class="status-bar">
-                        <span class="current-time-val">00:00</span>
-                        <span>🔋 5%</span>
-                    </div>
-                    <div class="lock-screen" id="lock-ian" style="background-image: url('https://raw.githubusercontent.com/Yam-Y-c/BF/refs/heads/main/B06.png')" onclick="unlock('ian')">
-                        <div class="lock-time current-time-val">00:00</div>
-                        <div class="lock-date">2026.01.08</div>
-                        <div style="position:absolute; bottom:80px; opacity:0.5; font-size:0.8rem; font-family: 'Noto Sans KR', sans-serif;">TAP TO UNLOCK</div>
-                    </div>
-                    <div class="screen" style="background-image: url('https://raw.githubusercontent.com/Yam-Y-c/BF/refs/heads/main/B06.png')">
-                        <div class="app-grid">
-                            <div class="app-item" onclick="openApp('ian-chat')"><div class="app-box" style="background:#222">💬</div><div class="app-label">메시지</div></div>
-                            <div class="app-item" onclick="openApp('ian-gallery')"><div class="app-box" style="background:#222">🖼️</div><div class="app-label">갤러리</div></div>
-                            <div class="app-item" onclick="openApp('ian-memo')"><div class="app-box" style="background:#222">📝</div><div class="app-label">메모</div></div>
+                <div class="phone-wrapper">
+                    <div class="phone-frame">
+                        <div class="status-bar">
+                            <span class="current-time-val">00:00</span>
+                            <span style="color:#ff5555">🔋 5%</span>
                         </div>
-                        <div id="ian-chat" class="app-window" style="background:#fff">
-                            <div class="app-header">채팅</div>
-                            <div class="chat-row" onclick="openSub('ian-chat-u')">
-                                <div class="chat-pfp" style="background-image:url('https://raw.githubusercontent.com/Yam-Y-c/BF/refs/heads/main/B01.png')"></div>
-                                <div><div style="font-weight:700; color:#000">나의 뮤즈</div><div style="font-size:0.75rem; color:#888">기다리고 있어. 내가 갈게.</div></div>
+                        <div class="lock-screen" id="lock-ian" style="background-image: url('https://raw.githubusercontent.com/Yam-Y-c/BF/refs/heads/main/B06.png')" onclick="unlock('ian')">
+                            <div class="lock-time current-time-val">00:00</div>
+                            <div class="lock-date">2026.01.08</div>
+                            <div style="position:absolute; bottom:80px; opacity:0.5; font-size:0.8rem; font-family: 'Noto Sans KR';">TAP TO UNLOCK</div>
+                        </div>
+                        <div class="screen" style="background-image: url('https://raw.githubusercontent.com/Yam-Y-c/BF/refs/heads/main/B06.png')">
+                            <div class="app-grid">
+                                <div class="app-item" onclick="openApp('ian-chat')"><div class="app-box" style="background:#222">💬</div><div class="app-label">메시지</div></div>
+                                <div class="app-item" onclick="openApp('ian-gallery')"><div class="app-box" style="background:#222">🖼️</div><div class="app-label">갤러리</div></div>
+                                <div class="app-item" onclick="openApp('ian-memo')"><div class="app-box" style="background:#222">📝</div><div class="app-label">메모</div></div>
                             </div>
-                            <div id="ian-chat-u" class="chat-sub kakao-bg">
-                                <div class="app-header" style="background:transparent; border:none">나의 뮤즈</div>
-                                <div class="chat-log" id="ian-chat-log"></div>
+                            <div id="ian-chat" class="app-window" style="background:#fff">
+                                <div class="app-header">채팅</div>
+                                <div class="chat-row" onclick="openSub('ian-chat-u')">
+                                    <div class="chat-pfp" style="background-image:url('https://raw.githubusercontent.com/Yam-Y-c/BF/refs/heads/main/B01.png')"></div>
+                                    <div><div style="font-weight:700; color:#000">나의 뮤즈</div><div style="font-size:0.75rem; color:#888">기다리고 있어. 내가 갈게.</div></div>
+                                </div>
+                                <div id="ian-chat-u" class="chat-sub kakao-bg">
+                                    <div class="app-header" style="background:transparent; border:none">나의 뮤즈</div>
+                                    <div class="chat-log" id="ian-chat-log"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div id="ian-gallery" class="app-window"><div class="app-header" style="background:#000; color:#fff; border:none">갤러리</div><div class="gallery-grid" id="ian-gallery-grid"></div></div>
-                        <div id="ian-memo" class="app-window" style="background:#111; color:#eee">
-                            <div class="app-header" style="color:#fff; border-bottom:1px solid #333">메모</div>
-                            <div id="ian-memo-lock-ui" class="memo-lock-overlay">
-                                <span style="color:#e74c3c; font-size:0.75rem; font-weight:700">⚠️ 스포주의: 잔혹한 진실에 접근합니다</span>
-                                <input type="password" id="ian-memo-pw" class="lock-pw-input" maxlength="4" placeholder="••••">
-                                <button onclick="checkMemoPw('ian')" style="padding:10px 25px; border:none; background:#333; color:#fff; cursor:pointer">확인</button>
+                            <div id="ian-gallery" class="app-window"><div class="app-header" style="background:#000; color:#fff; border:none">갤러리</div><div class="gallery-grid" id="ian-gallery-grid"></div></div>
+                            <div id="ian-memo" class="app-window" style="background:#111; color:#eee">
+                                <div class="app-header" style="color:#fff; border-bottom:1px solid #333">메모</div>
+                                <div id="ian-memo-lock-ui" class="memo-lock-overlay">
+                                    <span style="color:#e74c3c; font-size:0.8rem; font-weight:700">⚠️ 스포주의: 잔혹한 진실에 접근합니다</span>
+                                    <input type="password" id="ian-memo-pw" class="lock-pw-input" maxlength="4" placeholder="••••">
+                                    <button onclick="checkMemoPw('ian')" style="padding:10px 25px; border:none; background:#333; color:#fff; cursor:pointer">확인</button>
+                                </div>
+                                <div id="ian-memo-list" style="display:none; overflow-y:auto"></div>
+                                <div id="ian-memo-view" class="memo-detail"></div>
                             </div>
-                            <div id="ian-memo-list" style="display:none; overflow-y:auto"></div>
-                            <div id="ian-memo-view" class="memo-detail"></div>
-                        </div>
-                        <div id="ian-viewer" class="phone-viewer">
-                            <div id="ian-v-prev" class="v-nav v-prev" onclick="movePhoto('ian', -1)">‹</div>
-                            <img id="ian-viewer-img" class="viewer-img">
-                            <div id="ian-v-next" class="v-nav v-next" onclick="movePhoto('ian', 1)">›</div>
-                        </div>
-                        <div class="nav-bar">
-                            <div class="nav-btn">Ⅲ</div>
-                            <div class="nav-btn" onclick="goHome('ian')">○</div>
-                            <div class="nav-btn" onclick="back('ian')">◁</div>
+                            <div id="ian-viewer" class="phone-viewer">
+                                <div id="ian-v-prev" class="v-nav v-prev" onclick="movePhoto('ian', -1)">‹</div>
+                                <img id="ian-viewer-img" class="viewer-img">
+                                <div id="ian-v-next" class="v-nav v-next" onclick="movePhoto('ian', 1)">›</div>
+                            </div>
+                            <div class="nav-bar"><div class="nav-btn">Ⅲ</div><div class="nav-btn" onclick="goHome('ian')">○</div><div class="nav-btn" onclick="back('ian')">◁</div></div>
                         </div>
                     </div>
                 </div>
-                <button class="btn-back-final" onclick="goBack()">RETURN</button>
+                <button class="btn-return-main" onclick="goBack()">RETURN</button>
             </div>
         </div>
     </div>
@@ -305,32 +314,26 @@
             ajun: {
                 memos: [
                     {t: "[관리 항목] 오전 루틴", b: "- 영양제 복용 확인(분홍색 알약 1정 추가).\n- 약의 쓴맛에 대해 질문함. 내일은 자몽 주스에 섞어서 줄 것.\n- 질문이 길어지면 입을 맞춰 말을 돌릴 것. 거부하지 않게 더 다정하게 달래야 함."},
-                    {t: "[관찰 일지] 특이사항 발생", b: "- 2026.01.03. 유저가 잠결에 '이안'이라는 이름을 웅얼거림.\n- 평행세계의 잔상 혹은 동기화 현상으로 추정됨.\n- 당분간 외부 출입을 전면 금지하고 수면 시간을 1시간 늘릴 것.\n- \"그건 꿈일 뿐이야, 내가 여기 있잖아\"라고 주입 중."},
+                    {t: "[관찰 일지] 특이사항 발생", b: "- 2026.01.03. 유저가 잠결에 '이안'이라는 이름을 웅얼거림.\n- 평행세계의 잔상 혹은 동기화 현상으로 추정됨.\n- 당분간 외부 출입을 전면 금지하고 수면 시간을 1시간 늘릴 것.\n- \"그건 꿈일 뿐이야, 내가 여기 있잖아\"라고 반복 주입 중."},
                     {t: "[공간 계획] 정원 보수", b: "- 담장 위 가시덤불을 더 촘촘한 품종으로 교체할 것.\n- 시선이 닿는 곳은 반드시 흰 꽃만 보일 수 있게 정돈함.\n- 외부 소음이 들리지 않도록 거실 방음 보강 공사 예약 완료.\n세상은 위험하니까, 오직 이 안에서만 안전해야 해."},
-                    {t: "(제목 없음)", b: "당신은 기억 못 하겠지만, 이건 세 번째 '구원'이야\n이전 세계의 당신들은 너무 쉽게 부서졌어. 그러니까... 이번엔 내가 만든 낙원에서 아주 오래 살아야 해."},
+                    {t: "(제목 없음)", b: "당신은 기억 못 하겠지만, 이건 세 번째 '구원'이야.\n이전 세계의 당신들은 너무 쉽게 부서졌어. 그러니까... 이번엔 내가 만든 낙원에서 아주 오래 살아야 해."},
                     {t: "[식단 리스트]", b: "월: 오믈렛과 따뜻한 우유\n화: 단호박 스프\n수: 좋아하던 케이크\n모든 식단에 미량의 진정제 혼합 필수."}
                 ],
                 chats: [
                     {d: "2026.01.03", m: [{s:1, c:"잘 일어났어? 안색이 조금 안 좋아 보여서 걱정하며 나왔는데..."},{s:0, c:"응... 근데 챙겨준 비타민이 너무 써. 원래 이런 맛이야?"},{s:1, c:"몸이 많이 약해져서 그렇게 느껴지는 거야. 다 너를 위한 거니까 조금만 참고 마셔줘. 착하다."},{s:0, c:"알았어... 다 마셨어."},{s:1, c:"다행이다. 다 널 위해서 하는 말인 거 알지? 사랑해."}]},
-                    {d: "2026.01.03", m: [{s:1, c:"오늘 밖은 미세먼지가 너무 심하네. 환기도 하지 말고 꼭 안에만 있어."},{s:0, c:"아까 모르는 번호로 전화가 왔는데... 누가 자꾸 내 이름을 불러. 무서워."},{s:1, c:"세상이 험해서 그래. 이상한 사람들 말은 들을 필요 없어. 제정신이 아닌 사람들일 거야."},{s:0, c:"그 사람이 날 아는 것처럼 말하던데... 진짜 안 받아도 돼?"},{s:1, c:"응. 나만 믿어. 무슨 일이 생기면 나한테만 말해줘. 내가 널 지켜줄 테니까. 알았지?"}]},
-                    {d: "2026.01.05", m: [{s:0, c:"이준아, 가끔 기타 소리가 환청처럼 들려. 나 사실 기타 칠 줄 알았던 거 아냐?"},{s:1, c:"가엾게도... 어제 꿈이 너무 생생했나 봐. 넌 항상 내 옆에서 내가 읽어주는 책 듣는 걸 제일 좋아했어."},{s:0, c:"그래? 근데 손끝이 자꾸 딱딱한 걸 만졌던 기분이 나서..."},{s:1, c:"넌 연약해서 그런 무거운 건 들지도 못해. 네가 혼란스러워할 때마다 내 마음이 너무 아파. 다른 생각 하지 마, 응?"},{s:0, c:"응... 미안해. 내가 요즘 자꾸 기억이 꼬이나 봐."}]},
-                    {d: "2026.01.06", m: [{s:1, c:"이제 곧 들어가. 네가 좋아하는 조각 케이크 샀어."},{s:0, c:"빨리 와. 혼자 있으니까 자꾸 이상한 기분이 들어."},{s:1, c:"문 꼭 잠그고 기다리고 있어. 내가 열어주기 전까지는 누구한테도 열어주면 안 돼."},{s:1, c:"알았어. 너 올 때까지 거실 불 다 켜두고 있을게."},{s:1, c:"착하네. 넌 나 없으면 아무것도 못 하는 아이니까... 내가 빨리 가서 안아줄게."}]}
+                    {d: "2026.01.05", m: [{s:0, c:"이준아, 가끔 기타 소리가 환청처럼 들려. 나 사실 기타 칠 줄 알았던 거 아냐?"},{s:1, c:"가엾게도... 어제 꿈이 너무 생생했나 봐. 넌 항상 내 옆에서 내가 읽어주는 책 듣는 걸 제일 좋아했어."},{s:0, c:"그래? 근데 손끝이 자꾸 딱딱한 걸 만졌던 기분이 나서..."},{s:1, c:"넌 연약해서 그런 무거운 건 들지도 못해. 네가 혼란스러워할 때마다 내 마음이 너무 아파. 다른 생각 하지 마, 응?"}]}
                 ],
                 imgs: ["A01","A02","A03","A04","A07","A06","A08","A09"],
                 currentIdx: 0
             },
             ian: {
                 memos: [
-                    {t: "(제목 없음)", b: "자고 일어났더니 네가 없어. 화장실에도, 주방에도, 현관에도.\n신발은 그대로인데 몸만 빠져나간 것처럼 사라졌어. 장난치는 거지? 숨바꼭질하는 거면 이제 그만 나와.\n나 진짜 무서워지려고 하니까."},
+                    {t: "(제목 없음)", b: "자고 일어났더니 네가 없어.\n화장실에도, 주방에도, 현관에도.\n신발은 그대로인데 몸만 빠져나간 것처럼 사라졌어. 장난치는 거지? 숨바꼭질하는 거면 이제 그만 나와."},
                     {t: "가봐야 할 곳", b: "홍대 연습실 지하 (사장님도 못 봤다고 함)\n편의점 (CCTV 확인 결과 어제 밤 이후로 기록 없음)\n우리 자주 가던 공원 벤치\n너네 본가 (전화했는데 안 왔다고 함)\n대체 어디 있는 거야. 연기처럼 사라졌다는 게 말이 돼?"},
-                    {t: "(제목 없음)", b: "내가 어제 술 마시고 너한테 짜증 내서 그래?\n가사 안 써진다고 예민하게 굴었던 거, 그거 때문에 화나서 나간 거야?\n미안해. 내가 다 잘못했어.\n돌아오면 기타도 안 치고 담배도 끊을게. 네가 하라는 대로 다 할게.\n그러니까 제발 연락 한 통만 줘. 제발."},
-                    {t: "거울이 이상해", b: "아까 세수하다 거울을 봤는데, 내 얼굴이 내가 아닌 것처럼 보였어.\n아니, 내 뒤로 네가 보였던 것 같기도 해.\n잠을 못 자서 헛것을 보나. 거울 속의 너는 울고 있었던 것 같은데. 내가 미쳐가는 건가."},
-                    {t: "전단지 뽑기", b: "사진은 네가 제일 예쁘게 웃던 걸로. 연락처 내 번호 크게. '사례금 아끼지 않음' 적을 것. 경찰 새끼들 단순 가출이라고 하면 진짜 다 엎어버린다."},
-                    {t: "(제목 없음)", b: "집 안에 네 냄새가 점점 빠져나가. 네가 쓰던 샴푸, 옷에 배어있던 향수... 그거 다 사라지면 나 진짜 죽을지도 몰라. 널 잊는 게 아니라, 네가 이 세상에 없었던 사람이 될까 봐 그게 제일 무서워."}
+                    {t: "거울이 이상해", b: "아까 세수하다 거울을 봤는데, 내 얼굴이 내가 아닌 것처럼 보였어.\n아니, 내 뒤로 네가 보였던 것 같기도 해.\n잠을 못 자서 헛것을 보나. 거울 속의 너는 울고 있었던 것 같은데. 내가 미쳐가는 건가."}
                 ],
                 chats: [
                     {d: "2026.01.01", m: [{s:1, c:"어디야?"},{s:1, c:"신발은 그대로인데 어디로 간 거야?"},{s:1, c:"전화도 안 받고 무슨 일 있어? 제발 답장 좀 해줘..."}]},
-                    {d: "2026.01.04", m: [{s:1, c:"오늘도 전화를 안 받네 대체 어디 있는거야..."},{s:1, c:"미안해 내가 다 잘 못했어."},{s:1, c:"제발 연락 한 통만 주셈. 죽을 것 같으니까."}]},
                     {d: "2026.01.07", m: [{s:1, c:"방금 네 번호로 전화 걸었는데 어떤 새끼가 받더라. 근데 아무 말도 안 하고 웃기만 하더라고"},{s:1, c:"너 어디야? 그 새끼 대체 누구야? 내가 지금 경찰서 가고 있으니까 조금만 참아."},{s:1, c:"세상 다 뒤져서라도 너 찾아낼 거야. 거기 누구든 간에 죽여버릴 거야. 기다리고 있어. 내가 갈게."}]}
                 ],
                 imgs: ["B01","B02","B03","B04","B05","B07","B08","B09"],
@@ -443,7 +446,12 @@
             document.getElementById(char + '-v-next').classList.toggle('active', data.currentIdx < data.imgs.length - 1);
         }
 
-        function showProfile(id) { document.getElementById('selection-screen').style.display = 'none'; document.getElementById('profile-' + id).style.display = 'block'; window.scrollTo(0,0); }
+        function showProfile(id) {
+            document.getElementById('selection-screen').style.display = 'none';
+            document.getElementById('profile-' + id).style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
         function goBack() { location.reload(); }
         function unlock(char) { document.getElementById('lock-' + char).classList.add('unlocked'); }
         function goHome(char) { closeAll(char); document.getElementById('lock-' + char).classList.remove('unlocked'); }
